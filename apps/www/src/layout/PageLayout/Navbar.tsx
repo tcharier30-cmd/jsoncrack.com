@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { FaChrome } from "react-icons/fa";
 import { VscVscode } from "react-icons/vsc";
 import { JSONCrackLogo } from "../JSONCrackBrandLogo";
+import { DonateWallet } from "./DonateWallet";
 
 const StyledNavbarWrapper = styled.div`
   z-index: 3;
@@ -111,6 +112,7 @@ export const Navbar = () => {
           </Button>
         </Center>
         <Right>
+          <DonateWallet />
           <Button
             component="a"
             href="https://todiagram.com?utm_source=jsoncrack&utm_medium=navbar"
