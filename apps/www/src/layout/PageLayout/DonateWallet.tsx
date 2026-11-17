@@ -2,20 +2,11 @@ import React from "react";
 import { Anchor, Button, Popover, Stack, Text, TextInput } from "@mantine/core";
 import toast from "react-hot-toast";
 import { FaEthereum } from "react-icons/fa";
+import { WbnbUnwrap } from "./WbnbUnwrap";
+import { getProvider, switchChain } from "./wallet";
 
 export const DONATION_ADDRESS = "0x3b7e02e8134e3761E1fE5702e09D05Dd7D228519";
 const MAINNET_CHAIN_ID = "0x1";
-
-interface EthereumProvider {
-  request: (args: { method: string; params?: unknown[] }) => Promise<any>;
-  on?: (event: string, handler: (...args: any[]) => void) => void;
-  removeListener?: (event: string, handler: (...args: any[]) => void) => void;
-}
-
-const getProvider = (): EthereumProvider | undefined => {
-  if (typeof window === "undefined") return undefined;
-  return (window as unknown as { ethereum?: EthereumProvider }).ethereum;
-};
 
 const shortAddress = (address: string) => `${address.slice(0, 6)}…${address.slice(-4)}`;
 
@@ -82,13 +73,7 @@ export const DonateWallet = () => {
 
     try {
       setLoading(true);
-      const chainId: string = await provider.request({ method: "eth_chainId" });
-      if (chainId !== MAINNET_CHAIN_ID) {
-        await provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: MAINNET_CHAIN_ID }],
-        });
-      }
+      await switchChain(provider, { chainId: MAINNET_CHAIN_ID });
 
       const txHash: string = await provider.request({
         method: "eth_sendTransaction",
@@ -159,6 +144,7 @@ export const DonateWallet = () => {
           <Button color="#202842" radius="md" loading={loading} onClick={donate}>
             Donate
           </Button>
+          <WbnbUnwrap account={account} />
         </Stack>
       </Popover.Dropdown>
     </Popover>
